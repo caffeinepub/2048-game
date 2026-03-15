@@ -1,0 +1,348 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Bricolage Grotesque";
+  src: url("/assets/fonts/BricolageGrotesque[opsz,wdth,wght].woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geist Mono";
+  src: url("/assets/fonts/GeistMono[wght].woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Cabinet Grotesk";
+  src: url("/assets/fonts/CabinetGrotesk[wght].woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@layer base {
+  :root {
+    --radius: 0.75rem;
+
+    /* === 2048 Game Design Tokens === */
+    /* Dark premium indigo-black theme */
+    --background: 0.13 0.02 270;
+    --foreground: 0.95 0.01 90;
+
+    --card: 0.17 0.025 265;
+    --card-foreground: 0.95 0.01 90;
+
+    --popover: 0.19 0.025 265;
+    --popover-foreground: 0.95 0.01 90;
+
+    --primary: 0.78 0.18 60;
+    --primary-foreground: 0.12 0.02 270;
+
+    --secondary: 0.22 0.03 260;
+    --secondary-foreground: 0.85 0.02 90;
+
+    --muted: 0.2 0.025 265;
+    --muted-foreground: 0.55 0.02 270;
+
+    --accent: 0.72 0.2 50;
+    --accent-foreground: 0.12 0.02 270;
+
+    --destructive: 0.65 0.22 25;
+    --destructive-foreground: 0.98 0 0;
+
+    --border: 0.28 0.03 265;
+    --input: 0.22 0.025 265;
+    --ring: 0.78 0.18 60;
+
+    /* Chart colors */
+    --chart-1: 0.78 0.18 60;
+    --chart-2: 0.68 0.2 50;
+    --chart-3: 0.58 0.22 30;
+    --chart-4: 0.48 0.2 20;
+    --chart-5: 0.38 0.18 15;
+
+    /* Sidebar */
+    --sidebar: 0.15 0.025 268;
+    --sidebar-foreground: 0.95 0.01 90;
+    --sidebar-primary: 0.78 0.18 60;
+    --sidebar-primary-foreground: 0.12 0.02 270;
+    --sidebar-accent: 0.22 0.03 260;
+    --sidebar-accent-foreground: 0.85 0.02 90;
+    --sidebar-border: 0.28 0.03 265;
+    --sidebar-ring: 0.78 0.18 60;
+
+    /* 2048 tile colors — warm amber → orange → gold progression */
+    --tile-2-bg: 0.94 0.025 78;
+    --tile-2-fg: 0.38 0.05 60;
+    --tile-4-bg: 0.89 0.09 72;
+    --tile-4-fg: 0.3 0.05 58;
+    --tile-8-bg: 0.74 0.19 52;
+    --tile-8-fg: 0.97 0.01 80;
+    --tile-16-bg: 0.67 0.23 33;
+    --tile-16-fg: 0.97 0.01 80;
+    --tile-32-bg: 0.63 0.25 24;
+    --tile-32-fg: 0.97 0.01 80;
+    --tile-64-bg: 0.59 0.27 18;
+    --tile-64-fg: 0.97 0.01 80;
+    --tile-128-bg: 0.84 0.21 82;
+    --tile-128-fg: 0.16 0.03 268;
+    --tile-256-bg: 0.82 0.23 77;
+    --tile-256-fg: 0.14 0.03 268;
+    --tile-512-bg: 0.79 0.25 70;
+    --tile-512-fg: 0.12 0.02 268;
+    --tile-1024-bg: 0.77 0.27 62;
+    --tile-1024-fg: 0.1 0.02 268;
+    --tile-2048-bg: 0.84 0.3 58;
+    --tile-2048-fg: 0.07 0.02 268;
+
+    /* Game board */
+    --board-bg: 0.14 0.032 267;
+    --board-cell: 0.19 0.032 265;
+    --board-glow: 0.78 0.18 60;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Cabinet Grotesk", system-ui, sans-serif;
+  }
+}
+
+/* ============ Tile Animations ============ */
+@keyframes tile-appear {
+  0% {
+    transform: scale(0) rotate(-8deg);
+    opacity: 0;
+  }
+  55% {
+    transform: scale(1.18) rotate(2deg);
+    opacity: 1;
+  }
+  75% {
+    transform: scale(0.94) rotate(-1deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes tile-merge {
+  0% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.28);
+  }
+  55% {
+    transform: scale(0.88);
+  }
+  78% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes game-over-fade {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(8px);
+  }
+}
+
+@keyframes win-pulse {
+  0%, 100% {
+    box-shadow: 0 0 30px oklch(0.82 0.28 62 / 0.4), 0 0 60px oklch(0.82 0.28 62 / 0.2);
+  }
+  50% {
+    box-shadow: 0 0 50px oklch(0.82 0.28 62 / 0.7), 0 0 100px oklch(0.82 0.28 62 / 0.35);
+  }
+}
+
+@keyframes tile-score-pop {
+  0% { transform: translateY(0) scale(1); opacity: 1; }
+  60% { transform: translateY(-18px) scale(1.15); opacity: 0.9; }
+  100% { transform: translateY(-32px) scale(0.9); opacity: 0; }
+}
+
+.tile-new {
+  animation: tile-appear 0.22s cubic-bezier(0.34, 1.62, 0.64, 1) forwards;
+}
+
+.tile-merged {
+  animation: tile-merge 0.18s cubic-bezier(0.34, 1.4, 0.64, 1) forwards;
+}
+
+.board-win {
+  animation: win-pulse 1.5s ease-in-out infinite;
+}
+
+/* ============ Tile base — shared depth layer ============ */
+[class^="tile-"], [class*=" tile-"] {
+  position: relative;
+  isolation: isolate;
+}
+
+/* Shared inner highlight for all tiles */
+[class^="tile-"]::after, [class*=" tile-"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    oklch(1 0 0 / 0.14) 0%,
+    transparent 55%,
+    oklch(0 0 0 / 0.08) 100%
+  );
+  pointer-events: none;
+}
+
+/* ============ Tile value styles ============ */
+.tile-2 {
+  background: oklch(var(--tile-2-bg));
+  color: oklch(var(--tile-2-fg));
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.2),
+    0 4px 8px oklch(0 0 0 / 0.35),
+    0 1px 3px oklch(0 0 0 / 0.25);
+}
+.tile-4 {
+  background: oklch(var(--tile-4-bg));
+  color: oklch(var(--tile-4-fg));
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.18),
+    0 4px 8px oklch(0 0 0 / 0.35),
+    0 1px 3px oklch(0 0 0 / 0.25);
+}
+.tile-8 {
+  background: oklch(var(--tile-8-bg));
+  color: oklch(var(--tile-8-fg));
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.22),
+    0 0 14px oklch(var(--tile-8-bg) / 0.45),
+    0 4px 12px oklch(0 0 0 / 0.4);
+}
+.tile-16 {
+  background: oklch(var(--tile-16-bg));
+  color: oklch(var(--tile-16-fg));
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.2),
+    0 0 16px oklch(var(--tile-16-bg) / 0.5),
+    0 4px 14px oklch(0 0 0 / 0.4);
+}
+.tile-32 {
+  background: oklch(var(--tile-32-bg));
+  color: oklch(var(--tile-32-fg));
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.2),
+    0 0 18px oklch(var(--tile-32-bg) / 0.55),
+    0 5px 16px oklch(0 0 0 / 0.45);
+}
+.tile-64 {
+  background: oklch(var(--tile-64-bg));
+  color: oklch(var(--tile-64-fg));
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.18),
+    0 0 20px oklch(var(--tile-64-bg) / 0.6),
+    0 5px 18px oklch(0 0 0 / 0.45);
+}
+.tile-128 {
+  background: oklch(var(--tile-128-bg));
+  color: oklch(var(--tile-128-fg));
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.25),
+    0 0 22px oklch(var(--tile-128-bg) / 0.5),
+    0 6px 20px oklch(0 0 0 / 0.4);
+}
+.tile-256 {
+  background: oklch(var(--tile-256-bg));
+  color: oklch(var(--tile-256-fg));
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.25),
+    0 0 24px oklch(var(--tile-256-bg) / 0.55),
+    0 6px 22px oklch(0 0 0 / 0.4);
+}
+.tile-512 {
+  background: oklch(var(--tile-512-bg));
+  color: oklch(var(--tile-512-fg));
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.22),
+    0 0 26px oklch(var(--tile-512-bg) / 0.6),
+    0 6px 24px oklch(0 0 0 / 0.45);
+}
+.tile-1024 {
+  background: oklch(var(--tile-1024-bg));
+  color: oklch(var(--tile-1024-fg));
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.2),
+    0 0 30px oklch(var(--tile-1024-bg) / 0.65),
+    0 8px 28px oklch(0 0 0 / 0.5);
+}
+.tile-2048 {
+  background: oklch(var(--tile-2048-bg));
+  color: oklch(var(--tile-2048-fg));
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.3),
+    0 0 40px oklch(var(--tile-2048-bg) / 0.8),
+    0 0 80px oklch(var(--tile-2048-bg) / 0.4),
+    0 8px 32px oklch(0 0 0 / 0.55);
+}
+.tile-super {
+  background: oklch(0.72 0.2 290);
+  color: oklch(0.98 0 0);
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.3),
+    0 0 44px oklch(0.72 0.2 290 / 0.8),
+    0 0 88px oklch(0.72 0.2 290 / 0.4),
+    0 8px 32px oklch(0 0 0 / 0.55);
+}
+
+/* ============ Board ============ */
+.game-board {
+  background: oklch(var(--board-bg));
+  border-radius: 16px;
+  padding: 12px;
+  box-shadow:
+    inset 0 3px 8px oklch(0 0 0 / 0.45),
+    inset 0 1px 0 oklch(1 0 0 / 0.04),
+    0 12px 48px oklch(0 0 0 / 0.6),
+    0 4px 16px oklch(0 0 0 / 0.4),
+    0 0 0 1px oklch(var(--board-glow) / 0.12),
+    0 0 0 3px oklch(var(--board-bg) / 0.8);
+}
+
+.board-cell {
+  background: oklch(var(--board-cell));
+  border-radius: 10px;
+  box-shadow:
+    inset 0 2px 6px oklch(0 0 0 / 0.4),
+    inset 0 1px 0 oklch(0 0 0 / 0.2);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: oklch(var(--board-bg));
+}
+::-webkit-scrollbar-thumb {
+  background: oklch(var(--border));
+  border-radius: 3px;
+}
